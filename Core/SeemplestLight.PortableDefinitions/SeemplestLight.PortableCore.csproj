@@ -5,11 +5,11 @@
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D8666D8B-5632-476F-A81A-05222E4067BA}</ProjectGuid>
+    <ProjectGuid>{8DF3B8FC-EFD4-45FB-999E-5F15F10D71F7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SeemplestLight.Net.Core</RootNamespace>
-    <AssemblyName>SeemplestLight.Net.Core</AssemblyName>
+    <RootNamespace>SeemplestLight.PortableCore</RootNamespace>
+    <AssemblyName>SeemplestLight.PortableCore</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -39,8 +39,33 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\ConfigurationCategoryAttribute.cs" />
+    <Compile Include="Configuration\ConfigurationKeyAttribute.cs" />
+    <Compile Include="Configuration\IEnvironmentProvider.cs" />
+    <Compile Include="TestUtility\FakeDateTimeProvider.cs" />
+    <Compile Include="Timing\DateTimeProvider.cs" />
+    <Compile Include="Timing\DefaultDateTimeProvider.cs" />
+    <Compile Include="Configuration\IConfigurationReader.cs" />
+    <Compile Include="Timing\IDateTimeProvider.cs" />
+    <Compile Include="IoC\ActivationException.cs" />
+    <Compile Include="IoC\IServiceLocator.cs" />
+    <Compile Include="IoC\IServiceContainer.cs" />
+    <Compile Include="IoC\PreferredConstructorAttribute.cs" />
+    <Compile Include="IoC\ServiceRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Timing\IPeriodicActivity.cs" />
+    <Compile Include="Tracing\IOperationData.cs" />
+    <Compile Include="Tracing\ITraceEntryLogger.cs" />
+    <Compile Include="Tracing\TraceEntryBase.cs" />
+    <Compile Include="Tracing\TraceEntryLoggerBase.cs" />
+    <Compile Include="Tracing\TraceEntryType.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

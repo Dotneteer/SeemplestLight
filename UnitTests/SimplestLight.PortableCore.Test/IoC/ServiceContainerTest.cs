@@ -2,8 +2,9 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SeemplestLight.PortableCore.IoC;
+using Shouldly;
 
-namespace SimplestLight.PortableCore.Test.IoC
+namespace SeemplestLight.PortableCore.Test.IoC
 {
     [TestClass]
     public class ServiceContainerTest
@@ -21,10 +22,10 @@ namespace SimplestLight.PortableCore.Test.IoC
 
             // --- Assert
             var instances = ServiceRegistry.Default.GetAllInstances<TestClass1>().ToList();
-            Assert.AreEqual(1, instances.Count);
+            instances.Count.ShouldBe(1);
 
             var defaultInstance = ServiceRegistry.Default.GetInstance<TestClass1>();
-            Assert.AreSame(defaultInstance, instances[0]);
+            instances[0].ShouldBeSameAs(defaultInstance);
         }
 
         [TestMethod]
@@ -42,10 +43,10 @@ namespace SimplestLight.PortableCore.Test.IoC
 
             // --- Assert
             var instances = ServiceRegistry.Default.GetAllInstances<TestClass1>().ToList();
-            Assert.AreEqual(1, instances.Count);
+            instances.Count.ShouldBe(1);
 
             var defaultInstance = ServiceRegistry.Default.GetInstance<TestClass1>(KEY1);
-            Assert.AreSame(defaultInstance, instances[0]);
+            instances[0].ShouldBeSameAs(defaultInstance);
         }
 
         [TestMethod]
@@ -61,10 +62,10 @@ namespace SimplestLight.PortableCore.Test.IoC
 
             // --- Assert
             var instances = ServiceRegistry.Default.GetAllInstances<ITestClass>().ToList();
-            Assert.AreEqual(1, instances.Count);
+            instances.Count.ShouldBe(1);
 
             var defaultInstance = ServiceRegistry.Default.GetInstance<ITestClass>();
-            Assert.AreSame(defaultInstance, instances[0]);
+            instances[0].ShouldBeSameAs(defaultInstance);
         }
 
         [TestMethod]
@@ -82,10 +83,10 @@ namespace SimplestLight.PortableCore.Test.IoC
 
             // --- Assert
             var instances = ServiceRegistry.Default.GetAllInstances<ITestClass>().ToList();
-            Assert.AreEqual(1, instances.Count);
+            instances.Count.ShouldBe(1);
 
             var defaultInstance = ServiceRegistry.Default.GetInstance<ITestClass>(KEY1);
-            Assert.AreSame(defaultInstance, instances[0]);
+            instances[0].ShouldBeSameAs(defaultInstance);
         }
 
         [TestMethod]
@@ -99,10 +100,10 @@ namespace SimplestLight.PortableCore.Test.IoC
 
             // --- Assert
             var instances = ServiceRegistry.Default.GetAllInstances<ITestClass>().ToList();
-            Assert.AreEqual(1, instances.Count);
+            instances.Count.ShouldBe(1);
 
             var defaultInstance = ServiceRegistry.Default.GetInstance<ITestClass>();
-            Assert.AreSame(defaultInstance, instances[0]);
+            instances[0].ShouldBeSameAs(defaultInstance);
         }
 
         [TestMethod]
@@ -116,12 +117,12 @@ namespace SimplestLight.PortableCore.Test.IoC
             ServiceRegistry.Default.Register(() => new TestClass1());
 
             // --- Assert
-            Assert.AreEqual(0, TestClass1.InstancesCount);
+            TestClass1.InstancesCount.ShouldBe(0);
             ServiceRegistry.Default.GetInstance<TestClass1>();
-            Assert.AreEqual(1, TestClass1.InstancesCount);
+            TestClass1.InstancesCount.ShouldBe(1);
             var instances = ServiceRegistry.Default.GetAllInstances<TestClass1>();
             var instance = ServiceRegistry.Default.GetInstance<TestClass1>();
-            Assert.AreSame(instance, instances.ElementAt(0));
+            instances.ElementAt(0).ShouldBeSameAs(instance);
         }
 
         [TestMethod]
@@ -138,11 +139,11 @@ namespace SimplestLight.PortableCore.Test.IoC
                 KEY1);
 
             // --- Assert
-            Assert.AreEqual(0, TestClass1.InstancesCount);
+            TestClass1.InstancesCount.ShouldBe(0);
             var instance = ServiceRegistry.Default.GetInstance<TestClass1>(KEY1);
-            Assert.AreEqual(1, TestClass1.InstancesCount);
+            TestClass1.InstancesCount.ShouldBe(1);
             var instances = ServiceRegistry.Default.GetAllInstances<TestClass1>();
-            Assert.AreSame(instance, instances.ElementAt(0));
+            instances.ElementAt(0).ShouldBeSameAs(instance);
         }
 
         [TestMethod]
@@ -156,11 +157,11 @@ namespace SimplestLight.PortableCore.Test.IoC
             ServiceRegistry.Default.Register<ITestClass>(() => new TestClass1());
 
             // --- Assert
-            Assert.AreEqual(0, TestClass1.InstancesCount);
+            TestClass1.InstancesCount.ShouldBe(0);
             var instance = ServiceRegistry.Default.GetInstance<ITestClass>();
-            Assert.AreEqual(1, TestClass1.InstancesCount);
+            TestClass1.InstancesCount.ShouldBe(1);
             var instances = ServiceRegistry.Default.GetAllInstances<ITestClass>();
-            Assert.AreSame(instance, instances.ElementAt(0));
+            instances.ElementAt(0).ShouldBeSameAs(instance);
         }
 
         [TestMethod]
@@ -177,11 +178,11 @@ namespace SimplestLight.PortableCore.Test.IoC
                 KEY1);
 
             // --- Assert
-            Assert.AreEqual(0, TestClass1.InstancesCount);
+            TestClass1.InstancesCount.ShouldBe(0);
             var instance = ServiceRegistry.Default.GetInstance<ITestClass>(KEY1);
-            Assert.AreEqual(1, TestClass1.InstancesCount);
+            TestClass1.InstancesCount.ShouldBe(1);
             var instances = ServiceRegistry.Default.GetAllInstances<ITestClass>();
-            Assert.AreSame(instance, instances.ElementAt(0));
+            instances.ElementAt(0).ShouldBeSameAs(instance);
         }
 
         [TestMethod]
@@ -195,11 +196,11 @@ namespace SimplestLight.PortableCore.Test.IoC
             ServiceRegistry.Default.Register<ITestClass, TestClass1>();
 
             // --- Assert
-            Assert.AreEqual(0, TestClass1.InstancesCount);
+            TestClass1.InstancesCount.ShouldBe(0);
             var instance = ServiceRegistry.Default.GetInstance<ITestClass>();
-            Assert.AreEqual(1, TestClass1.InstancesCount);
+            TestClass1.InstancesCount.ShouldBe(1);
             var instances = ServiceRegistry.Default.GetAllInstances<ITestClass>();
-            Assert.AreSame(instance, instances.ElementAt(0));
+            instances.ElementAt(0).ShouldBeSameAs(instance);
         }
 
         [TestMethod]
@@ -210,9 +211,9 @@ namespace SimplestLight.PortableCore.Test.IoC
             ServiceRegistry.Default.Register<TestClass1>();
 
             // --- Act/Assert
-            Assert.IsFalse(ServiceRegistry.Default.ContainsCreated<TestClass1>());
+            ServiceRegistry.Default.ContainsCreated<TestClass1>().ShouldBeFalse();
             ServiceRegistry.Default.GetInstance<TestClass1>();
-            Assert.IsTrue(ServiceRegistry.Default.ContainsCreated<TestClass1>());
+            ServiceRegistry.Default.ContainsCreated<TestClass1>().ShouldBeTrue();
         }
 
         [TestMethod]
@@ -226,24 +227,24 @@ namespace SimplestLight.PortableCore.Test.IoC
             ServiceRegistry.Default.Register<TestClass2>();
 
             // --- Act/Assert
-            Assert.IsFalse(ServiceRegistry.Default.ContainsCreated<TestClass1>());
-            Assert.IsFalse(ServiceRegistry.Default.ContainsCreated<TestClass1>(KEY1));
-            Assert.IsFalse(ServiceRegistry.Default.ContainsCreated<TestClass2>());
-            Assert.IsFalse(ServiceRegistry.Default.ContainsCreated<TestClass3>());
+            ServiceRegistry.Default.ContainsCreated<TestClass1>().ShouldBeFalse();
+            ServiceRegistry.Default.ContainsCreated<TestClass1>(KEY1).ShouldBeFalse();
+            ServiceRegistry.Default.ContainsCreated<TestClass2>().ShouldBeFalse();
+            ServiceRegistry.Default.ContainsCreated<TestClass3>().ShouldBeFalse();
 
             ServiceRegistry.Default.GetInstance<TestClass1>(KEY1);
 
-            Assert.IsTrue(ServiceRegistry.Default.ContainsCreated<TestClass1>());
-            Assert.IsTrue(ServiceRegistry.Default.ContainsCreated<TestClass1>(KEY1));
-            Assert.IsFalse(ServiceRegistry.Default.ContainsCreated<TestClass2>());
-            Assert.IsFalse(ServiceRegistry.Default.ContainsCreated<TestClass3>());
+            ServiceRegistry.Default.ContainsCreated<TestClass1>().ShouldBeTrue();
+            ServiceRegistry.Default.ContainsCreated<TestClass1>(KEY1).ShouldBeTrue();
+            ServiceRegistry.Default.ContainsCreated<TestClass2>().ShouldBeFalse();
+            ServiceRegistry.Default.ContainsCreated<TestClass3>().ShouldBeFalse();
 
             ServiceRegistry.Default.GetInstance<TestClass2>();
 
-            Assert.IsTrue(ServiceRegistry.Default.ContainsCreated<TestClass1>());
-            Assert.IsTrue(ServiceRegistry.Default.ContainsCreated<TestClass1>(KEY1));
-            Assert.IsTrue(ServiceRegistry.Default.ContainsCreated<TestClass2>());
-            Assert.IsFalse(ServiceRegistry.Default.ContainsCreated<TestClass3>());
+            ServiceRegistry.Default.ContainsCreated<TestClass1>().ShouldBeTrue();
+            ServiceRegistry.Default.ContainsCreated<TestClass1>(KEY1).ShouldBeTrue();
+            ServiceRegistry.Default.ContainsCreated<TestClass2>().ShouldBeTrue();
+            ServiceRegistry.Default.ContainsCreated<TestClass3>().ShouldBeFalse();
         }
 
         [TestMethod]
@@ -258,17 +259,17 @@ namespace SimplestLight.PortableCore.Test.IoC
             ServiceRegistry.Default.Register<TestClass2>();
 
             // --- Act/Assert
-            Assert.IsFalse(ServiceRegistry.Default.ContainsCreated<TestClass1>());
-            Assert.IsFalse(ServiceRegistry.Default.ContainsCreated<TestClass1>(KEY1));
-            Assert.IsFalse(ServiceRegistry.Default.ContainsCreated<TestClass1>(KEY2));
+            ServiceRegistry.Default.ContainsCreated<TestClass1>().ShouldBeFalse();
+            ServiceRegistry.Default.ContainsCreated<TestClass1>(KEY1).ShouldBeFalse();
+            ServiceRegistry.Default.ContainsCreated<TestClass1>(KEY2).ShouldBeFalse();
 
             ServiceRegistry.Default.GetInstance<TestClass1>(KEY1);
 
-            Assert.IsTrue(ServiceRegistry.Default.ContainsCreated<TestClass1>());
-            Assert.IsTrue(ServiceRegistry.Default.ContainsCreated<TestClass1>(KEY1));
-            Assert.IsFalse(ServiceRegistry.Default.ContainsCreated<TestClass1>(KEY2));
-            Assert.IsFalse(ServiceRegistry.Default.ContainsCreated<TestClass2>(KEY1));
-            Assert.IsFalse(ServiceRegistry.Default.ContainsCreated<TestClass3>(KEY1));
+            ServiceRegistry.Default.ContainsCreated<TestClass1>().ShouldBeTrue();
+            ServiceRegistry.Default.ContainsCreated<TestClass1>(KEY1).ShouldBeTrue();
+            ServiceRegistry.Default.ContainsCreated<TestClass1>(KEY2).ShouldBeFalse();
+            ServiceRegistry.Default.ContainsCreated<TestClass2>(KEY1).ShouldBeFalse();
+            ServiceRegistry.Default.ContainsCreated<TestClass3>(KEY1).ShouldBeFalse();
         }
 
         [TestMethod]
@@ -279,14 +280,14 @@ namespace SimplestLight.PortableCore.Test.IoC
             ServiceRegistry.Default.Register<TestBaseClass>(true);
 
             // --- Act/Assert
-            Assert.IsTrue(ServiceRegistry.Default.IsRegistered<TestBaseClass>());
-            Assert.IsTrue(ServiceRegistry.Default.ContainsCreated<TestBaseClass>());
+            ServiceRegistry.Default.IsRegistered<TestBaseClass>().ShouldBeTrue();
+            ServiceRegistry.Default.ContainsCreated<TestBaseClass>().ShouldBeTrue();
 
             var instance = ServiceRegistry.Default.GetInstance<TestBaseClass>();
             instance.Remove();
 
-            Assert.IsTrue(ServiceRegistry.Default.IsRegistered<TestBaseClass>());
-            Assert.IsFalse(ServiceRegistry.Default.ContainsCreated<TestBaseClass>());
+            ServiceRegistry.Default.IsRegistered<TestBaseClass>().ShouldBeTrue();
+            ServiceRegistry.Default.ContainsCreated<TestBaseClass>().ShouldBeFalse();
         }
 
         [TestMethod]
@@ -305,14 +306,14 @@ namespace SimplestLight.PortableCore.Test.IoC
                     return new TestClassForCreationTime();
                 });
 
-            Assert.AreEqual(0, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(0);
 
             ServiceRegistry.Default.GetInstance<TestClassForCreationTime>();
             ServiceRegistry.Default.GetInstance<TestClassForCreationTime>("Key1");
             ServiceRegistry.Default.GetInstance<TestClassForCreationTime>("Key2");
 
-            Assert.AreEqual(3, TestClassForCreationTime.InstancesCreated);
-            Assert.AreEqual(3, factoryWasUsed);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(3);
+            factoryWasUsed.ShouldBe(3);
         }
 
         [TestMethod]
@@ -323,13 +324,13 @@ namespace SimplestLight.PortableCore.Test.IoC
             TestClassForCreationTime.Reset();
 
             // --- Act/Assert
-            Assert.AreEqual(0, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(0);
             ServiceRegistry.Default.Register<TestClassForCreationTime>();
-            Assert.AreEqual(0, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(0);
             ServiceRegistry.Default.GetInstance<TestClassForCreationTime>();
-            Assert.AreEqual(1, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(1);
             ServiceRegistry.Default.GetInstance<TestClassForCreationTime>();
-            Assert.AreEqual(1, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(1);
         }
 
         [TestMethod]
@@ -340,15 +341,15 @@ namespace SimplestLight.PortableCore.Test.IoC
             TestClassForCreationTime.Reset();
 
             // --- Act/Assert
-            Assert.AreEqual(0, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(0);
             ServiceRegistry.Default.Register<TestClassForCreationTime>();
-            Assert.AreEqual(0, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(0);
             ServiceRegistry.Default.GetInstance<TestClassForCreationTime>("Key1");
-            Assert.AreEqual(1, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(1);
             ServiceRegistry.Default.GetInstance<TestClassForCreationTime>("Key2");
-            Assert.AreEqual(2, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(2);
             ServiceRegistry.Default.GetInstance<TestClassForCreationTime>("Key1");
-            Assert.AreEqual(2, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(2);
         }
 
         [TestMethod]
@@ -359,13 +360,13 @@ namespace SimplestLight.PortableCore.Test.IoC
             TestClassForCreationTime.Reset();
 
             // --- Act/Assert
-            Assert.AreEqual(0, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(0);
             ServiceRegistry.Default.Register<TestClassForCreationTime>();
-            Assert.AreEqual(0, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(0);
             ServiceRegistry.Default.GetInstance<TestClassForCreationTime>();
-            Assert.AreEqual(1, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(1);
             ServiceRegistry.Default.GetInstance<TestClassForCreationTime>();
-            Assert.AreEqual(1, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(1);
         }
 
         [TestMethod]
@@ -376,13 +377,13 @@ namespace SimplestLight.PortableCore.Test.IoC
             TestClassForCreationTime.Reset();
 
             // --- Act/Assert
-            Assert.AreEqual(0, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(0);
             ServiceRegistry.Default.Register<ITestClass, TestClassForCreationTime>();
-            Assert.AreEqual(0, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(0);
             ServiceRegistry.Default.GetInstance<ITestClass>();
-            Assert.AreEqual(1, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(1);
             ServiceRegistry.Default.GetInstance<ITestClass>();
-            Assert.AreEqual(1, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(1);
         }
 
         [TestMethod]
@@ -393,15 +394,15 @@ namespace SimplestLight.PortableCore.Test.IoC
             TestClassForCreationTime.Reset();
 
             // --- Act/Assert
-            Assert.AreEqual(0, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(0);
             ServiceRegistry.Default.Register<ITestClass, TestClassForCreationTime>();
-            Assert.AreEqual(0, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(0);
             ServiceRegistry.Default.GetInstance<ITestClass>("Key1");
-            Assert.AreEqual(1, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(1);
             ServiceRegistry.Default.GetInstance<ITestClass>("Key2");
-            Assert.AreEqual(2, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(2);
             ServiceRegistry.Default.GetInstance<ITestClass>("Key1");
-            Assert.AreEqual(2, TestClassForCreationTime.InstancesCreated);
+            TestClassForCreationTime.InstancesCreated.ShouldBe(2);
         }
 
         [TestMethod]
@@ -411,15 +412,15 @@ namespace SimplestLight.PortableCore.Test.IoC
             ServiceRegistry.Default.Reset();
 
             // --- Act/Assert
-            Assert.IsFalse(ServiceRegistry.Default.IsRegistered<TestClass1>());
+            ServiceRegistry.Default.IsRegistered<TestClass1>().ShouldBeFalse();
             ServiceRegistry.Default.Register<TestClass1>();
-            Assert.IsTrue(ServiceRegistry.Default.IsRegistered<TestClass1>());
+            ServiceRegistry.Default.IsRegistered<TestClass1>().ShouldBeTrue();
 
             ServiceRegistry.Default.GetInstance<TestClass1>();
-            Assert.IsTrue(ServiceRegistry.Default.IsRegistered<TestClass1>());
+            ServiceRegistry.Default.IsRegistered<TestClass1>().ShouldBeTrue();
 
             ServiceRegistry.Default.Unregister<TestClass1>();
-            Assert.IsFalse(ServiceRegistry.Default.IsRegistered<TestClass1>());
+            ServiceRegistry.Default.IsRegistered<TestClass1>().ShouldBeFalse();
         }
 
         [TestMethod]
@@ -430,15 +431,15 @@ namespace SimplestLight.PortableCore.Test.IoC
 
             // --- Act/Assert
             var instance = new TestClass1();
-            Assert.IsFalse(ServiceRegistry.Default.IsRegistered<TestClass1>());
+            ServiceRegistry.Default.IsRegistered<TestClass1>().ShouldBeFalse();
             ServiceRegistry.Default.Register(() => instance);
-            Assert.IsTrue(ServiceRegistry.Default.IsRegistered<TestClass1>());
+            ServiceRegistry.Default.IsRegistered<TestClass1>().ShouldBeTrue();
 
             ServiceRegistry.Default.GetInstance<TestClass1>();
-            Assert.IsTrue(ServiceRegistry.Default.IsRegistered<TestClass1>());
+            ServiceRegistry.Default.IsRegistered<TestClass1>().ShouldBeTrue();
 
             ServiceRegistry.Default.Unregister<TestClass1>();
-            Assert.IsFalse(ServiceRegistry.Default.IsRegistered<TestClass1>());
+            ServiceRegistry.Default.IsRegistered<TestClass1>().ShouldBeFalse();
         }
 
         [TestMethod]
@@ -451,19 +452,19 @@ namespace SimplestLight.PortableCore.Test.IoC
 
             // --- Act/Assert
             var instance = new TestClass1();
-            Assert.IsFalse(ServiceRegistry.Default.IsRegistered<TestClass1>(KEY1));
-            Assert.IsFalse(ServiceRegistry.Default.IsRegistered<TestClass1>(KEY2));
+            ServiceRegistry.Default.IsRegistered<TestClass1>(KEY1).ShouldBeFalse();
+            ServiceRegistry.Default.IsRegistered<TestClass1>(KEY2).ShouldBeFalse();
 
             ServiceRegistry.Default.Register(() => instance, KEY1);
-            Assert.IsTrue(ServiceRegistry.Default.IsRegistered<TestClass1>(KEY1));
-            Assert.IsFalse(ServiceRegistry.Default.IsRegistered<TestClass1>(KEY2));
+            ServiceRegistry.Default.IsRegistered<TestClass1>(KEY1).ShouldBeTrue();
+            ServiceRegistry.Default.IsRegistered<TestClass1>(KEY2).ShouldBeFalse();
 
             ServiceRegistry.Default.GetInstance<TestClass1>(KEY1);
-            Assert.IsTrue(ServiceRegistry.Default.IsRegistered<TestClass1>(KEY1));
+            ServiceRegistry.Default.IsRegistered<TestClass1>(KEY1).ShouldBeTrue();
 
             ServiceRegistry.Default.Unregister<TestClass1>(KEY1);
-            Assert.IsFalse(ServiceRegistry.Default.IsRegistered<TestClass1>(KEY1));
-            Assert.IsFalse(ServiceRegistry.Default.IsRegistered<TestClass1>(KEY2));
+            ServiceRegistry.Default.IsRegistered<TestClass1>(KEY1).ShouldBeFalse();
+            ServiceRegistry.Default.IsRegistered<TestClass1>(KEY2).ShouldBeFalse();
         }
 
         [TestMethod]
@@ -473,15 +474,15 @@ namespace SimplestLight.PortableCore.Test.IoC
             ServiceRegistry.Default.Reset();
 
             // --- Act/Assert
-            Assert.IsFalse(ServiceRegistry.Default.IsRegistered<ITestClass>());
+            ServiceRegistry.Default.IsRegistered<ITestClass>().ShouldBeFalse();
             ServiceRegistry.Default.Register<ITestClass, TestClass1>();
-            Assert.IsTrue(ServiceRegistry.Default.IsRegistered<ITestClass>());
+            ServiceRegistry.Default.IsRegistered<ITestClass>().ShouldBeTrue();
 
             ServiceRegistry.Default.GetInstance<ITestClass>();
-            Assert.IsTrue(ServiceRegistry.Default.IsRegistered<ITestClass>());
+            ServiceRegistry.Default.IsRegistered<ITestClass>().ShouldBeTrue();
 
             ServiceRegistry.Default.Unregister<ITestClass>();
-            Assert.IsFalse(ServiceRegistry.Default.IsRegistered<ITestClass>());
+            ServiceRegistry.Default.IsRegistered<ITestClass>().ShouldBeFalse();
         }
 
         [TestMethod]
@@ -505,13 +506,13 @@ namespace SimplestLight.PortableCore.Test.IoC
 
             // --- Act/Assert
             var instance1 = new TestClass6();
-            Assert.IsNotNull(instance1);
-            Assert.IsNull(instance1.MyProperty);
+            instance1.ShouldNotBeNull();
+            instance1.MyProperty.ShouldBeNull();
 
             var instance2 = ServiceRegistry.Default.GetInstance<TestClass6>();
-            Assert.IsNotNull(instance2);
-            Assert.IsNotNull(instance2.MyProperty);
-            Assert.AreSame(property, instance2.MyProperty);
+            instance2.ShouldNotBeNull();
+            instance2.MyProperty.ShouldNotBeNull();
+            instance2.MyProperty.ShouldBeSameAs(property);
         }
 
         [TestMethod]

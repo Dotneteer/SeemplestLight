@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BDB676A7-4D32-44A0-9C25-6A8C66E01039}</ProjectGuid>
+    <ProjectGuid>{DE7959DD-9676-4E16-BFB9-6236FD676EF4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SimplestLight.PortableCore.Test</RootNamespace>
-    <AssemblyName>SimplestLight.PortableCore.Test</AssemblyName>
+    <RootNamespace>SeemplestLight.Net46.Core.Test</RootNamespace>
+    <AssemblyName>SeemplestLight.Net46.Core.Test</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -36,6 +36,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Shouldly, Version=2.8.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Shouldly.2.8.0\lib\net40\Shouldly.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -51,15 +55,19 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="IoC\ServiceContainerTest.cs" />
+    <Compile Include="Configuration\AppConfigReaderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SeemplestLight.Net.Core\SeemplestLight.Net.Core.csproj">
-      <Project>{d8666d8b-5632-476f-a81a-05222e4067ba}</Project>
-      <Name>SeemplestLight.Net.Core</Name>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\SeemplestLight.Net46.Core\SeemplestLight.Net46.Core.csproj">
+      <Project>{3f39a394-e7d5-44ee-9ae5-622cfffc21b0}</Project>
+      <Name>SeemplestLight.Net46.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SeemplestLight.PortableDefinitions\SeemplestLight.PortableCore.csproj">
+    <ProjectReference Include="..\..\Core\SeemplestLight.PortableDefinitions\SeemplestLight.PortableCore.csproj">
       <Project>{8df3b8fc-efd4-45fb-999e-5f15f10d71f7}</Project>
       <Name>SeemplestLight.PortableCore</Name>
     </ProjectReference>
