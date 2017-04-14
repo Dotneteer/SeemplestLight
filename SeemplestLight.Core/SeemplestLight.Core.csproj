@@ -45,14 +45,20 @@
     <Compile Include="Configuration\ConfigurationCategoryAttribute.cs" />
     <Compile Include="Configuration\ConfigurationKeyAttribute.cs" />
     <Compile Include="Configuration\ConfigurationPropertyValueReader.cs" />
+    <Compile Include="Configuration\DefaultEnvironmentProvider.cs" />
     <Compile Include="Configuration\IConfigurationReader.cs" />
     <Compile Include="Configuration\IEnvironmentProvider.cs" />
     <Compile Include="DependencyInjection\IServiceLocator.cs" />
     <Compile Include="DependencyInjection\IServiceRegistry.cs" />
     <Compile Include="DependencyInjection\ServiceAlreadyRegisteredException.cs" />
+    <Compile Include="DependencyInjection\ServiceManager.cs" />
     <Compile Include="DependencyInjection\ServiceNotFoundException.cs" />
     <Compile Include="DependencyInjection\ServiceRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Timing\DateTimeProvider.cs" />
+    <Compile Include="Timing\DefaultDateTimeProvider.cs" />
+    <Compile Include="Timing\IDateTimeProvider.cs" />
+    <Compile Include="Timing\IPeriodicActivity.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

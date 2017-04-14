@@ -83,8 +83,8 @@ namespace SeemplestLight.Core.DependencyInjection
         /// The service itself remains registered and can be used to create other instances.
         /// </summary>
         /// <typeparam name="TInterface">The type of the instance to be removed.</typeparam>
-        /// <param name="key">The name corresponding to the instance that must be removed.</param>
-        void Unregister<TInterface>(string key)
+        /// <param name="name">The name corresponding to the instance that must be removed.</param>
+        void Unregister<TInterface>(string name)
             where TInterface : class;
 
         /// <summary>

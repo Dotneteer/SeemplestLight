@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using SeemplestLight.Core.DependencyInjection;
 
 namespace SeemplestLight.Core.Configuration
 {
@@ -19,15 +20,15 @@ namespace SeemplestLight.Core.Configuration
         /// </summary>
         public ConfigurationPropertyValueReader()
         {
-            //_valueReader = ServiceRegistry.Default.GetInstance<IConfigurationReader>();
-            //var fr = new StackFrame(1, false);
-            //_configurationSetType = fr.GetMethod().DeclaringType;
-            //// ReSharper disable once PossibleNullReferenceException
-            //var attrs = _configurationSetType.GetCustomAttributes(typeof(ConfigurationCategoryAttribute), false)
-            //    as ConfigurationCategoryAttribute[];
-            //_categoryName = attrs != null && attrs.Length > 0
-            //    ? attrs[0].Value
-            //    : _configurationSetType.Name;
+            _valueReader = ServiceManager.GetService<IConfigurationReader>();
+            var fr = new StackFrame(1, false);
+            _configurationSetType = fr.GetMethod().DeclaringType;
+            // ReSharper disable once PossibleNullReferenceException
+            var attrs = _configurationSetType.GetCustomAttributes(typeof(ConfigurationCategoryAttribute), false)
+                as ConfigurationCategoryAttribute[];
+            _categoryName = attrs != null && attrs.Length > 0
+                ? attrs[0].Name
+                : _configurationSetType.Name;
         }
 
         /// <summary>
@@ -75,12 +76,12 @@ namespace SeemplestLight.Core.Configuration
                 var prop = _configurationSetType.GetProperty(propName);
                 if (prop != null)
                 {
-                    //var attrs = prop.GetCustomAttributes(typeof(ConfigurationKeyAttribute), false)
-                    //        as ConfigurationKeyAttribute[];
-                    //var name = attrs != null && attrs.Length > 0
-                    //    ? attrs[0].Value
-                    //    : RemovePrefixOfGetters(propName);
-                    //return GetValue<T>(name);
+                    var attrs = prop.GetCustomAttributes(typeof(ConfigurationKeyAttribute), false)
+                            as ConfigurationKeyAttribute[];
+                    var name = attrs != null && attrs.Length > 0
+                        ? attrs[0].Name
+                        : RemovePrefixOfGetters(propName);
+                    return GetValue<T>(name);
                 }
             }
             return GetValue<T>("$$$None");
