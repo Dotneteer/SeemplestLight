@@ -16,6 +16,7 @@ namespace SeemplestLight.Core.DependencyInjection
         /// </summary>
         public ServiceRegistry()
         {
+            Reset();
         }
 
         /// <summary>
@@ -29,36 +30,42 @@ namespace SeemplestLight.Core.DependencyInjection
         public ServiceRegistry(IServiceRegistry parent)
         {
             Parent = parent;
+            Reset();
         }
 
         /// <summary>
         /// Gets the service instance with the type specified in the input parameter
         /// </summary>
-        /// <param name="service">Type of the service</param>
-        /// <returns>Service object, if the specified service is found; otherwise, null</returns>
-        public object GetService(Type service)
+        /// <param name="serviceType">Type of the service</param>
+        /// <returns>Service object, if the specified service is found</returns>
+        /// <exception cref="ServiceNotFoundException">The service instance cannot be found</exception>
+        public object GetService(Type serviceType)
         {
-            var serviceObj = ObtainService(service);
-            return serviceObj ?? Parent?.GetService(service);
+            return GetService(serviceType, null);
         }
 
         /// <summary>
         /// Gets the named service instance with the type specified in the input parameter
         /// </summary>
-        /// <param name="service">Type of the service</param>
+        /// <param name="serviceType">Type of the service</param>
         /// <param name="name">Service instance name</param>
-        /// <returns>Service object, if the specified service is found; otherwise, null</returns>
-        public object GetService(Type service, string name)
+        /// <returns>Service object, if the specified service is found</returns>
+        /// <exception cref="ServiceNotFoundException">The service instance cannot be found</exception>
+        public object GetService(Type serviceType, string name)
         {
-            var serviceObj = ObtainService(service, name);
-            return serviceObj ?? Parent?.GetService(service, name);
+            var serviceObj = ObtainService(serviceType, name);
+            return serviceObj ?? 
+                (Parent == null 
+                    ? throw new ServiceNotFoundException(serviceType, name)
+                    : Parent?.GetService(serviceType, name));
         }
 
         /// <summary>
         /// Gets the service instance with the type specified in <typeparamref name="TService"/>
         /// </summary>
         /// <typeparam name="TService">Service type</typeparam>
-        /// <returns>Service object, if the specified service is found; otherwise, null</returns>
+        /// <returns>Service object, if the specified service is found</returns>
+        /// <exception cref="ServiceNotFoundException">The service instance cannot be found</exception>
         public TService GetService<TService>()
         {
             return (TService)GetService(typeof(TService));
@@ -69,7 +76,8 @@ namespace SeemplestLight.Core.DependencyInjection
         /// </summary>
         /// <typeparam name="TService">Service type</typeparam>
         /// <param name="name">Service instance name</param>
-        /// <returns>Service object, if the specified service is found; otherwise, null</returns>
+        /// <returns>Service object, if the specified service is found</returns>
+        /// <exception cref="ServiceNotFoundException">The service instance cannot be found</exception>
         public TService GetService<TService>(string name)
         {
             return (TService)GetService(typeof(TService), name);
@@ -141,7 +149,7 @@ namespace SeemplestLight.Core.DependencyInjection
         /// must be returned when the given type is resolved.</param>
         public void Register<TInterface>(Func<TInterface> factory) where TInterface : class
         {
-            throw new NotImplementedException();
+            Register(factory, null);
         }
 
         /// <summary>
@@ -153,7 +161,27 @@ namespace SeemplestLight.Core.DependencyInjection
         /// <param name="name">The name for which the given instance is registered.</param>
         public void Register<TInterface>(Func<TInterface> factory, string name) where TInterface : class
         {
-            throw new NotImplementedException();
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+            var serviceType = typeof(TInterface);
+            var key = new InstanceKey(serviceType, name);
+
+            if (_factories.ContainsKey(key))
+            {
+                throw new ServiceAlreadyRegisteredException(serviceType, null);
+            }
+
+            _factories.Add(key, factory);
+            if (name == null) return;
+
+            if (!_namedInstances.TryGetValue(serviceType, out List<string> instances))
+            {
+                instances = new List<string>();
+                _namedInstances.Add(serviceType, instances);
+            }
+            instances.Add(name);
         }
 
         /// <summary>
@@ -163,7 +191,7 @@ namespace SeemplestLight.Core.DependencyInjection
         /// <typeparam name="TInterface">The service that must be removed.</typeparam>
         public void Unregister<TInterface>() where TInterface : class
         {
-            throw new NotImplementedException();
+            Unregister<TInterface>(null);
         }
 
         /// <summary>
@@ -171,10 +199,24 @@ namespace SeemplestLight.Core.DependencyInjection
         /// The service itself remains registered and can be used to create other instances.
         /// </summary>
         /// <typeparam name="TInterface">The type of the instance to be removed.</typeparam>
-        /// <param name="key">The name corresponding to the instance that must be removed.</param>
-        public void Unregister<TInterface>(string key) where TInterface : class
+        /// <param name="name">The name corresponding to the instance that must be removed.</param>
+        public void Unregister<TInterface>(string name) where TInterface : class
         {
-            throw new NotImplementedException();
+            var serviceType = typeof(TInterface);
+            var key = new InstanceKey(serviceType, name);
+
+            _factories.Remove(key);
+            if (name == null) return;
+
+            if (!_namedInstances.TryGetValue(serviceType, out List<string> instances))
+            {
+                return;
+            }
+            instances.Remove(name);
+            if (instances.Count == 0)
+            {
+                _namedInstances.Remove(serviceType);
+            }
         }
 
         /// <summary>
@@ -183,17 +225,20 @@ namespace SeemplestLight.Core.DependencyInjection
         /// <remarks>
         /// When a service is not found, as a fallback, a registry can check its parent registry.
         /// </remarks>
-        public IServiceRegistry Parent { get; private set; }
+        public IServiceRegistry Parent { get; }
 
         /// <summary>
         /// This method resolves a service object request
         /// </summary>
-        /// <param name="service">Service object type</param>
+        /// <param name="serviceType">Service object type</param>
         /// <param name="name">Service instance name</param>
         /// <returns>Service instance, if found; otherwise, null</returns>
-        private object ObtainService(Type service, string name = null)
+        private object ObtainService(Type serviceType, string name = null)
         {
-            throw new NotImplementedException();
+            var key = new InstanceKey(serviceType, name);
+            return _factories.TryGetValue(key, out Func<object> factory)
+                ? factory()
+                : null;
         }
 
         /// <summary>
@@ -204,12 +249,12 @@ namespace SeemplestLight.Core.DependencyInjection
             /// <summary>
             /// Service type
             /// </summary>
-            public Type Type { get; }
+            private Type Type { get; }
 
             /// <summary>
             /// Optional service name
             /// </summary>
-            public string Name { get; }
+            private string Name { get; }
 
             public InstanceKey(Type type, string name)
             {

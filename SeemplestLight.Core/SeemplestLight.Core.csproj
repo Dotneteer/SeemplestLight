@@ -49,6 +49,8 @@
     <Compile Include="Configuration\IEnvironmentProvider.cs" />
     <Compile Include="DependencyInjection\IServiceLocator.cs" />
     <Compile Include="DependencyInjection\IServiceRegistry.cs" />
+    <Compile Include="DependencyInjection\ServiceAlreadyRegisteredException.cs" />
+    <Compile Include="DependencyInjection\ServiceNotFoundException.cs" />
     <Compile Include="DependencyInjection\ServiceRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

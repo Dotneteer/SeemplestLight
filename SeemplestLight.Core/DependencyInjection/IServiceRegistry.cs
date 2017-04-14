@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 namespace SeemplestLight.Core.DependencyInjection
 {
     /// <summary>
@@ -20,14 +19,14 @@ namespace SeemplestLight.Core.DependencyInjection
         /// is already registered.
         /// </summary>
         /// <typeparam name="TInterface">The type that the method checks for.</typeparam>
-        /// <returns>True if the type is registered, false otherwise.</returns>
+        /// <returns>True if the type is registered; otherwise, false.</returns>
         bool IsRegistered<TInterface>();
 
         /// <summary>
         /// Gets a value indicating whether a given service type is already registered.
         /// </summary>
         /// <param name="serviceType">The type that the method checks for.</param>
-        /// <returns>True if the type is registered, false otherwise.</returns>
+        /// <returns>True if the type is registered; otherwise, false.</returns>
         bool IsRegistered(Type serviceType);
 
         /// <summary>
@@ -36,7 +35,7 @@ namespace SeemplestLight.Core.DependencyInjection
         /// </summary>
         /// <typeparam name="TInterface">The type that the method checks for.</typeparam>
         /// <param name="name">The name that the method checks for.</param>
-        /// <returns>True if the type and name are registered, false otherwise.</returns>
+        /// <returns>True if the type is registered; otherwise, false.</returns>
         bool IsRegistered<TInterface>(string name);
 
         /// <summary>
@@ -45,15 +44,17 @@ namespace SeemplestLight.Core.DependencyInjection
         /// </summary>
         /// <param name="serviceType">The type that the method checks for.</param>
         /// <param name="name">The name that the method checks for.</param>
-        /// <returns>True if the type is registered, false otherwise.</returns>
+        /// <returns>True if the type is registered; otherwise, false.</returns>
         bool IsRegistered(Type serviceType, string name);
 
         /// <summary>
         /// Registers a given instance for a given service type.
         /// </summary>
         /// <typeparam name="TInterface">The type that is being registered.</typeparam>
-        /// <param name="factory">The factory method able to create the instance that
-        /// must be returned when the given type is resolved.</param>
+        /// <param name="factory">
+        /// The factory method able to create the instance that
+        /// must be returned when the given type is resolved.
+        /// </param>
         void Register<TInterface>(Func<TInterface> factory)
             where TInterface : class;
 
@@ -61,8 +62,10 @@ namespace SeemplestLight.Core.DependencyInjection
         /// Registers a given instance for a given service type and a given name.
         /// </summary>
         /// <typeparam name="TInterface">The type that is being registered.</typeparam>
-        /// <param name="factory">The factory method able to create the instance that
-        /// must be returned when the given type is resolved.</param>
+        /// <param name="factory">
+        /// The factory method able to create the instance that
+        /// must be returned when the given type is resolved.
+        /// </param>
         /// <param name="name">The name for which the given instance is registered.</param>
         void Register<TInterface>(Func<TInterface> factory, string name)
             where TInterface : class;

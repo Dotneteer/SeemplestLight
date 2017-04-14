@@ -36,9 +36,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Shouldly, Version=2.8.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shouldly.2.8.0\lib\net40\Shouldly.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Shouldly, Version=2.8.2.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Shouldly.2.8.2\lib\net451\Shouldly.dll</HintPath>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
@@ -59,10 +58,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\SeemplestLight.Net.Core\SeemplestLight.Net.Core.csproj">
-      <Project>{d8666d8b-5632-476f-a81a-05222e4067ba}</Project>
-      <Name>SeemplestLight.Net.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\SeemplestLight.PortableDefinitions\SeemplestLight.PortableCore.csproj">
       <Project>{8df3b8fc-efd4-45fb-999e-5f15f10d71f7}</Project>
       <Name>SeemplestLight.PortableCore</Name>
