@@ -1,5 +1,4 @@
-﻿using SeemplestLight.Net46.Core.Configuration;
-using SeemplestLight.PortableCore.Timing;
+﻿using SeemplestLight.PortableCore.Timing;
 using SeemplestLight.PortableCore.Tracing;
 using System.Threading;
 
@@ -24,7 +23,7 @@ namespace SeemplestLight.Net46.Core.Tracing
             // --- Provide the current machine's name as server name
             if (HostName == null)
             {
-                HostName = EnvironmentProvider.GetHostName();
+                //HostName = EnvironmentProvider.GetHostName();
             }
 
             // --- Provide thread information
