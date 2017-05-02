@@ -66,11 +66,12 @@ namespace SeemplestLight.Core.AbstractFiles
         /// Removes a container from the storage, provided, it is empty
         /// </summary>
         /// <param name="containerName">Name of the container to remove</param>
+        /// <param name="eraseContents"></param>
         /// <returns>True, if the container has been removed; otherwise, false</returns>
         /// <exception cref="System.InvalidOperationException">
         /// The container is not empty, thus it cannot be removed.
         /// </exception>
-        public Task<bool> RemoveContainer(string containerName)
+        public Task<bool> RemoveContainer(string containerName, bool eraseContents = false)
         {
             return Task.Run(() =>
             {
@@ -84,7 +85,7 @@ namespace SeemplestLight.Core.AbstractFiles
                 {
                     throw new InvalidOperationException($"{containerName} is not empty, it cannot be removed");
                 }
-                Directory.Delete(containerPath, true);
+                Directory.Delete(containerPath, eraseContents);
                 return true;
             });
         }

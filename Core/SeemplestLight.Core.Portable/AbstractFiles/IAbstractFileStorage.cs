@@ -37,10 +37,11 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         /// Removes a container from the storage, provided, it is empty
         /// </summary>
         /// <param name="containerName">Name of the container to remove</param>
+        /// <param name="eraseContents">True indicates that the container should be emptied</param>
         /// <returns>True, if the container has been removed; otherwise, false</returns>
         /// <exception cref="InvalidOperationException">
         /// The container is not empty, thus it cannot be removed.
         /// </exception>
-        Task<bool> RemoveContainer(string containerName);
+        Task<bool> RemoveContainer(string containerName, bool eraseContents = false);
     }
 }

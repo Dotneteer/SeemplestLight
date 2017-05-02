@@ -14,7 +14,7 @@ namespace SeemplestLight.Core.Test.AbstractFiles
         private const string ROOT = @"C:\Temp\AbstractFiles";
 
         [TestInitialize]
-        public void ClassInitialize()
+        public void TestInitialize()
         {
             if (!Directory.Exists(ROOT))
             {
@@ -29,7 +29,6 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             {
                 folderInfo.Delete(true);
             }
-
         }
 
         [TestMethod]
