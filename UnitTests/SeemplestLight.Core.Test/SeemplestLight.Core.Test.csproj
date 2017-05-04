@@ -51,6 +51,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractFiles\AutopFlushTextWriterTest.cs" />
     <Compile Include="AbstractFiles\WindowsFileStorageTest.cs" />
     <Compile Include="Configuration\AppConfigReaderTest.cs" />
     <Compile Include="DependencyInjection\ServiceRegistryTest.cs" />

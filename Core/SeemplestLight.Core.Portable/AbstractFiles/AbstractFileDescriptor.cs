@@ -4,9 +4,10 @@ using System.Collections.Generic;
 namespace SeemplestLight.Core.Portable.AbstractFiles
 {
     /// <summary>
-    /// Implements the minimal contract of IAbstractFile
+    /// This interface represents an abstract file that can be managed in
+    /// either a file system or in cloud storage.
     /// </summary>
-    public class AbstractFile : IAbstractFile
+    public class AbstractFileDescriptor
     {
         /// <summary>
         /// Information that describes the storage root of the file
@@ -36,7 +37,7 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         /// <param name="rootContainer">Root folder name</param>
         /// <param name="pathSegments">File path segments</param>
         /// <param name="fileName">File name with extension</param>
-        public AbstractFile(IAbstractFileStorage storageRoot, string rootContainer, IEnumerable<string> pathSegments, string fileName)
+        protected AbstractFileDescriptor(IAbstractFileStorage storageRoot, string rootContainer, IEnumerable<string> pathSegments, string fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName))
             {

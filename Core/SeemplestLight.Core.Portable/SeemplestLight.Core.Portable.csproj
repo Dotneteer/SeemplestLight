@@ -36,9 +36,12 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractFiles\AbstractFile.cs" />
-    <Compile Include="AbstractFiles\IAbstractFile.cs" />
+    <Compile Include="AbstractFiles\AbstractFileDescriptor.cs" />
+    <Compile Include="AbstractFiles\AbstractFileService.cs" />
+    <Compile Include="AbstractFiles\AutoFlushTextWriter.cs" />
+    <Compile Include="AbstractFiles\IAbstractFileService.cs" />
     <Compile Include="AbstractFiles\IAbstractFileStorage.cs" />
+    <Compile Include="AbstractFiles\IAbstractTextFile.cs" />
     <Compile Include="Configuration\ConfigurationCategoryAttribute.cs" />
     <Compile Include="Configuration\ConfigurationKeyAttribute.cs" />
     <Compile Include="Configuration\IConfigurationReader.cs" />
