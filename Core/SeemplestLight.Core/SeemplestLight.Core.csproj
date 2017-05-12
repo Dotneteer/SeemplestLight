@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractFiles\WindowsFileStorage.cs" />
+    <Compile Include="AbstractFiles\WindowsTextFileWriter.cs" />
     <Compile Include="Configuration\AppConfigReader.cs" />
     <Compile Include="Configuration\ConfigurationPropertyValueReader.cs" />
     <Compile Include="Configuration\DefaultEnvironmentProvider.cs" />

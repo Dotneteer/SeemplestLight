@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using SeemplestLight.Core.Portable.AbstractFiles;
 
@@ -87,6 +88,109 @@ namespace SeemplestLight.Core.AbstractFiles
                 }
                 Directory.Delete(containerPath, eraseContents);
                 return true;
+            });
+        }
+
+        /// <summary>
+        /// Checks whether the specified file exists in the storage.
+        /// </summary>
+        /// <param name="file">File to check</param>
+        /// <returns>True, if the file exists; otherwise, false.</returns>
+        public Task<bool> Exists(AbstractFileDescriptor file)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Creates an abstract text file. Returns the object to work with the file.
+        /// </summary>
+        /// <param name="file">Abstract file descriptor</param>
+        /// <param name="formatProvider">Optional format provider</param>
+        /// <param name="encoding">Optional file encoding</param>
+        /// <param name="flushSize">
+        ///     The flush size to set in Kbytes. If zero or less, the default storage provider flush
+        ///     size is used.
+        /// </param>
+        /// <returns>
+        /// The object that provides operations to work with the text file.
+        /// </returns>
+        public Task<IAbstractTextFileWriter> CreateText(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
+            Encoding encoding = null, int flushSize = 0)
+        {
+            return OpenTextWriter(FileMode.Create, file, formatProvider, encoding, flushSize);
+        }
+
+        /// <summary>
+        /// Opens an abstract text file for append operation. Returns the object to work with the file.
+        /// </summary>
+        /// <param name="file">Abstract file descriptor</param>
+        /// <param name="formatProvider">Optional format provider</param>
+        /// <param name="encoding">Optional file encoding</param>
+        /// <param name="flushSize">
+        ///     The flush size to set in Kbytes. If zero or less, the default storage provider flush
+        ///     size is used.
+        /// </param>
+        /// <returns>
+        /// The object that provides operations to work with the text file.
+        /// </returns>
+        public Task<IAbstractTextFileWriter> AppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
+            Encoding encoding = null, int flushSize = 0)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Opens an abstract text file for append operation, or creates it, provided, it does not exists.
+        /// Returns the object to work with the file.
+        /// </summary>
+        /// <param name="file">Abstract file descriptor</param>
+        /// <param name="formatProvider">Optional format provider</param>
+        /// <param name="encoding">Optional file encoding</param>
+        /// <param name="flushSize">
+        ///     The flush size to set in Kbytes. If zero or less, the default storage provider flush
+        ///     size is used.
+        /// </param>
+        /// <returns>
+        /// The object that provides operations to work with the text file.
+        /// </returns>
+        public Task<IAbstractTextFileWriter> CreateOrAppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
+            Encoding encoding = null, int flushSize = 0)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Creates a Windows path from an <see cref="AbstractFileDescriptor"/>
+        /// </summary>
+        /// <param name="descriptor">File descriptior to create the path from</param>
+        /// <returns>Windows file path</returns>
+        public static string FilePathFromAbstractFile(AbstractFileDescriptor descriptor)
+        {
+            var folder = descriptor.RootContainer ?? "";
+            if (descriptor.PathSegments != null)
+            {
+                folder = descriptor.PathSegments.Aggregate(folder, Path.Combine);
+            }
+            return Path.Combine(folder, descriptor.FileName);
+        }
+
+        /// <summary>
+        /// Gets the full file path from an abstract descriptor
+        /// </summary>
+        private string GetFilePath(AbstractFileDescriptor descriptor) =>
+            Path.Combine(RootFolder, FilePathFromAbstractFile(descriptor));
+
+        /// <summary>
+        /// Opens a windows file with the specified file mode.
+        /// </summary>
+        private async Task<IAbstractTextFileWriter> OpenTextWriter(FileMode fileMode, AbstractFileDescriptor file, 
+            IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0)
+        {
+            return await Task.Run(() =>
+            {
+                var textFile = File.Open(GetFilePath(file), fileMode);
+                var writer = new StreamWriter(textFile, encoding ?? Encoding.UTF8);
+                return new WindowsTextFileWriter(writer, formatProvider, encoding, flushSize);
             });
         }
     }

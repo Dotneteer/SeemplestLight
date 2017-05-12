@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SeemplestLight.Core.Portable.AbstractFiles
@@ -43,5 +44,59 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         /// The container is not empty, thus it cannot be removed.
         /// </exception>
         Task<bool> RemoveContainer(string containerName, bool eraseContents = false);
+
+        /// <summary>
+        /// Checks whether the specified file exists in the storage.
+        /// </summary>
+        /// <param name="file">File to check</param>
+        /// <returns>True, if the file exists; otherwise, false.</returns>
+        Task<bool> Exists(AbstractFileDescriptor file);
+
+        /// <summary>
+        /// Creates an abstract text file. Returns the object to work with the file.
+        /// </summary>
+        /// <param name="file">Abstract file descriptor</param>
+        /// <param name="formatProvider">Optional format provider</param>
+        /// <param name="encoding">Optional file encoding</param>
+        /// <param name="flushSize">
+        ///     The flush size to set in Kbytes. If zero or less, the default storage provider flush
+        ///     size is used.
+        /// </param>
+        /// <returns>
+        /// The object that provides operations to work with the text file.
+        /// </returns>
+        Task<IAbstractTextFileWriter> CreateText(AbstractFileDescriptor file, IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0);
+
+        /// <summary>
+        /// Opens an abstract text file for append operation. Returns the object to work with the file.
+        /// </summary>
+        /// <param name="file">Abstract file descriptor</param>
+        /// <param name="formatProvider">Optional format provider</param>
+        /// <param name="encoding">Optional file encoding</param>
+        /// <param name="flushSize">
+        ///     The flush size to set in Kbytes. If zero or less, the default storage provider flush
+        ///     size is used.
+        /// </param>
+        /// <returns>
+        /// The object that provides operations to work with the text file.
+        /// </returns>
+        Task<IAbstractTextFileWriter> AppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0);
+
+        /// <summary>
+        /// Operns an abstract text file for append operation, or creates it, provided, it does not exists.
+        /// Returns the object to work with the file.
+        /// </summary>
+        /// <param name="file">Abstract file descriptor</param>
+        /// <param name="formatProvider">Optional format provider</param>
+        /// <param name="encoding">Optional file encoding</param>
+        /// <param name="flushSize">
+        ///     The flush size to set in Kbytes. If zero or less, the default storage provider flush
+        ///     size is used.
+        /// </param>
+        /// <returns>
+        /// The object that provides operations to work with the text file.
+        /// </returns>
+        Task<IAbstractTextFileWriter> CreateOrAppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0);
+
     }
 }
