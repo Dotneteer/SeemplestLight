@@ -53,6 +53,16 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         Task<bool> Exists(AbstractFileDescriptor file);
 
         /// <summary>
+        /// Opens a text file for read. Returns the object to work with the file.
+        /// </summary>
+        /// <param name="file">Abstract file descriptor</param>
+        /// <param name="encoding">Optional file encoding</param>
+        /// <returns>
+        /// The object that provides operations to work with the text file.
+        /// </returns>
+        Task<IAbstractTextFile> OpenText(AbstractFileDescriptor file, Encoding encoding = null);
+
+        /// <summary>
         /// Creates an abstract text file. Returns the object to work with the file.
         /// </summary>
         /// <param name="file">Abstract file descriptor</param>
@@ -65,7 +75,7 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        Task<IAbstractTextFileWriter> CreateText(AbstractFileDescriptor file, IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0);
+        Task<IAbstractTextFile> CreateText(AbstractFileDescriptor file, IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0);
 
         /// <summary>
         /// Opens an abstract text file for append operation. Returns the object to work with the file.
@@ -80,7 +90,7 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        Task<IAbstractTextFileWriter> AppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0);
+        Task<IAbstractTextFile> AppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0);
 
         /// <summary>
         /// Operns an abstract text file for append operation, or creates it, provided, it does not exists.
@@ -96,7 +106,7 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        Task<IAbstractTextFileWriter> CreateOrAppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0);
+        Task<IAbstractTextFile> CreateOrAppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0);
 
     }
 }

@@ -144,6 +144,13 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
 
         public override Encoding Encoding { get; }
 
+        public override void Flush()
+        {
+            FlushCount++;
+            _flushAction?.Invoke(_writer.ToString());
+            _writer = new StringWriter(_formatProvider);
+        }
+
         /// <summary>
         /// Automatically flushes the contents of the current writer
         /// </summary>
@@ -153,9 +160,7 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
             var contents = _writer.ToString();
             if (contents.Length >= FlushSize)
             {
-                FlushCount++;
-                _flushAction?.Invoke(contents);
-                _writer = new StringWriter(_formatProvider);
+                Flush();
             }
         }
     }

@@ -124,6 +124,19 @@ namespace SeemplestLight.Core.Azure.AbstractFiles
         }
 
         /// <summary>
+        /// Opens a text file for read. Returns the object to work with the file.
+        /// </summary>
+        /// <param name="file">Abstract file descriptor</param>
+        /// <param name="encoding">Optional file encoding</param>
+        /// <returns>
+        /// The object that provides operations to work with the text file.
+        /// </returns>
+        public Task<IAbstractTextFile> OpenText(AbstractFileDescriptor file, Encoding encoding = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Creates an abstract text file. Returns the object to work with the file.
         /// </summary>
         /// <param name="file">Abstract file descriptor</param>
@@ -136,7 +149,7 @@ namespace SeemplestLight.Core.Azure.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        public Task<IAbstractTextFileWriter> CreateText(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
+        public Task<IAbstractTextFile> CreateText(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
             Encoding encoding = null, int flushSize = 0)
         {
             throw new NotImplementedException();
@@ -155,7 +168,7 @@ namespace SeemplestLight.Core.Azure.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        public Task<IAbstractTextFileWriter> AppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
+        public Task<IAbstractTextFile> AppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
             Encoding encoding = null, int flushSize = 0)
         {
             throw new NotImplementedException();
@@ -175,7 +188,7 @@ namespace SeemplestLight.Core.Azure.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        public Task<IAbstractTextFileWriter> CreateOrAppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
+        public Task<IAbstractTextFile> CreateOrAppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
             Encoding encoding = null, int flushSize = 0)
         {
             throw new NotImplementedException();

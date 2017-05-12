@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SeemplestLight.Core.AbstractFiles;
+using SeemplestLight.Core.Portable.AbstractFiles;
 using Shouldly;
 // ReSharper disable ObjectCreationAsStatement
 
@@ -158,6 +161,246 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             // --- Assert
             removed.ShouldBeTrue();
             (await wfs.ContainerExists(CONTAINER)).ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public async Task CreateTextWorksAsExpected()
+        {
+            // --- Arrange
+            const string BODY = "This is a text file";
+            var wfs = new WindowsFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+
+            // --- Act
+            using (var textFile = await wfs.CreateText(file))
+            {
+                textFile.Writer.Write(BODY);
+            }
+
+            // --- Assert
+            using (var savedFile = await wfs.OpenText(file))
+            {
+                var text = savedFile.Reader.ReadToEnd();
+                text.ShouldBe(BODY);
+            }
+        }
+
+        [TestMethod]
+        public async Task CreateTextWorksWithUnicode()
+        {
+            // --- Arrange
+            const string BODY = "This is a text file";
+            var wfs = new WindowsFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+
+            // --- Act
+            using (var textFile = await wfs.CreateText(file, encoding: Encoding.Unicode))
+            {
+                textFile.Writer.Write(BODY);
+            }
+
+            // --- Assert
+            using (var savedFile = await wfs.OpenText(file))
+            {
+                var text = savedFile.Reader.ReadToEnd();
+                text.ShouldBe(BODY);
+            }
+        }
+
+        [TestMethod]
+        public async Task CreateTextWorksWithUtf32Encoding()
+        {
+            // --- Arrange
+            const string BODY = "This is a text file";
+            var wfs = new WindowsFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+
+            // --- Act
+            using (var textFile = await wfs.CreateText(file, encoding: Encoding.UTF32))
+            {
+                textFile.Writer.Write(BODY);
+            }
+
+            // --- Assert
+            using (var savedFile = await wfs.OpenText(file))
+            {
+                var text = savedFile.Reader.ReadToEnd();
+                text.ShouldBe(BODY);
+            }
+        }
+
+        [TestMethod]
+        public async Task CreateTextWorksWithNeutralCulture()
+        {
+            // --- Arrange
+            const string BODY = "1.25";
+            var wfs = new WindowsFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+
+            // --- Act
+            using (var textFile = await wfs.CreateText(file))
+            {
+                textFile.Writer.Write(1.25);
+            }
+
+            // --- Assert
+            using (var savedFile = await wfs.OpenText(file))
+            {
+                var text = savedFile.Reader.ReadToEnd();
+                text.ShouldBe(BODY);
+            }
+        }
+
+        [TestMethod]
+        public async Task CreateTextWorksWithSpecificCulture()
+        {
+            // --- Arrange
+            const string BODY = "1,25";
+            var wfs = new WindowsFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+
+            // --- Act
+            using (var textFile = await wfs.CreateText(file, new CultureInfo("hu-hu")))
+            {
+                textFile.Writer.Write(1.25);
+            }
+
+            // --- Assert
+            using (var savedFile = await wfs.OpenText(file))
+            {
+                var text = savedFile.Reader.ReadToEnd();
+                text.ShouldBe(BODY);
+            }
+        }
+
+        [TestMethod]
+        public async Task AppendTextWorksAsExpected()
+        {
+            // --- Arrange
+            const string BODY = "FirstSecond";
+            var wfs = new WindowsFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+            using (var textFile = await wfs.CreateText(file))
+            {
+                textFile.Writer.Write("First");
+            }
+
+            // --- Act
+            using (var textFile = await wfs.AppendText(file))
+            {
+                textFile.Writer.Write("Second");
+            }
+
+            // --- Assert
+            using (var savedFile = await wfs.OpenText(file))
+            {
+                var text = savedFile.Reader.ReadToEnd();
+                text.ShouldBe(BODY);
+            }
+        }
+
+        [TestMethod]
+        public async Task AppendTextWorksWithUnicode()
+        {
+            // --- Arrange
+            const string BODY = "FirstSecond";
+            var wfs = new WindowsFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+            using (var textFile = await wfs.CreateText(file, encoding: Encoding.Unicode))
+            {
+                textFile.Writer.Write("First");
+            }
+
+            // --- Act
+            using (var textFile = await wfs.AppendText(file, encoding: Encoding.Unicode))
+            {
+                textFile.Writer.Write("Second");
+            }
+
+            // --- Assert
+            using (var savedFile = await wfs.OpenText(file))
+            {
+                var text = savedFile.Reader.ReadToEnd();
+                text.ShouldBe(BODY);
+            }
+        }
+
+        [TestMethod]
+        public async Task AppendTextWorksWithUtf32()
+        {
+            // --- Arrange
+            const string BODY = "FirstSecond";
+            var wfs = new WindowsFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+            using (var textFile = await wfs.CreateText(file, encoding: Encoding.UTF32))
+            {
+                textFile.Writer.Write("First");
+            }
+
+            // --- Act
+            using (var textFile = await wfs.AppendText(file, encoding: Encoding.UTF32))
+            {
+                textFile.Writer.Write("Second");
+            }
+
+            // --- Assert
+            using (var savedFile = await wfs.OpenText(file))
+            {
+                var text = savedFile.Reader.ReadToEnd();
+                text.ShouldBe(BODY);
+            }
+        }
+
+        [TestMethod]
+        public async Task AppendTextWorksWithNeutralCulture()
+        {
+            // --- Arrange
+            const string BODY = "1.25-1.25";
+            var wfs = new WindowsFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+            using (var textFile = await wfs.CreateText(file))
+            {
+                textFile.Writer.Write(1.25);
+            }
+
+            // --- Act
+            using (var textFile = await wfs.AppendText(file))
+            {
+                textFile.Writer.Write(-1.25);
+            }
+
+            // --- Assert
+            using (var savedFile = await wfs.OpenText(file))
+            {
+                var text = savedFile.Reader.ReadToEnd();
+                text.ShouldBe(BODY);
+            }
+        }
+
+        [TestMethod]
+        public async Task AppendTextWorksWithSpecificCulture()
+        {
+            // --- Arrange
+            const string BODY = "1,25-1,25";
+            var wfs = new WindowsFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+            using (var textFile = await wfs.CreateText(file, new CultureInfo("hu-hu")))
+            {
+                textFile.Writer.Write(1.25);
+            }
+
+            // --- Act
+            using (var textFile = await wfs.AppendText(file, new CultureInfo("hu-hu")))
+            {
+                textFile.Writer.Write(-1.25);
+            }
+
+            // --- Assert
+            using (var savedFile = await wfs.OpenText(file))
+            {
+                var text = savedFile.Reader.ReadToEnd();
+                text.ShouldBe(BODY);
+            }
         }
     }
 }

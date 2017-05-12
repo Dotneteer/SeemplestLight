@@ -39,7 +39,7 @@
     <Compile Include="AbstractFiles\AbstractFileDescriptor.cs" />
     <Compile Include="AbstractFiles\AutoFlushTextWriter.cs" />
     <Compile Include="AbstractFiles\IAbstractFileStorage.cs" />
-    <Compile Include="AbstractFiles\IAbstractTextFileWriter.cs" />
+    <Compile Include="AbstractFiles\IAbstractTextFile.cs" />
     <Compile Include="Configuration\ConfigurationCategoryAttribute.cs" />
     <Compile Include="Configuration\ConfigurationKeyAttribute.cs" />
     <Compile Include="Configuration\IConfigurationReader.cs" />

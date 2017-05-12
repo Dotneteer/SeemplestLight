@@ -31,7 +31,7 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         /// <param name="rootContainer">Root folder name</param>
         /// <param name="pathSegments">File path segments</param>
         /// <param name="fileName">File name with extension</param>
-        protected AbstractFileDescriptor(string rootContainer, IEnumerable<string> pathSegments, string fileName)
+        public AbstractFileDescriptor(string rootContainer, IEnumerable<string> pathSegments, string fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName))
             {

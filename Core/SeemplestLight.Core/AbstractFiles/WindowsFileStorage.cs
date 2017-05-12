@@ -98,7 +98,27 @@ namespace SeemplestLight.Core.AbstractFiles
         /// <returns>True, if the file exists; otherwise, false.</returns>
         public Task<bool> Exists(AbstractFileDescriptor file)
         {
-            throw new NotImplementedException();
+            return Task.Run(() => File.Exists(GetFilePath(file)));
+        }
+
+        /// <summary>
+        /// Opens a text file for read. Returns the object to work with the file.
+        /// </summary>
+        /// <param name="file">Abstract file descriptor</param>
+        /// <param name="encoding">Optional file encoding</param>
+        /// <returns>
+        /// The object that provides operations to work with the text file.
+        /// </returns>
+        public async Task<IAbstractTextFile> OpenText(AbstractFileDescriptor file, Encoding encoding = null)
+        {
+            return await Task.Run(() =>
+            {
+                var textFile = File.Open(GetFilePath(file), FileMode.Open, FileAccess.Read);
+                var reader = encoding == null 
+                ? new StreamReader(textFile)
+                : new StreamReader(textFile, encoding);
+                return new WindowsTextFile(reader);
+            });
         }
 
         /// <summary>
@@ -114,10 +134,24 @@ namespace SeemplestLight.Core.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        public Task<IAbstractTextFileWriter> CreateText(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
+        public async Task<IAbstractTextFile> CreateText(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
             Encoding encoding = null, int flushSize = 0)
         {
-            return OpenTextWriter(FileMode.Create, file, formatProvider, encoding, flushSize);
+            return await Task.Run(() =>
+            {
+                var fileName = GetFilePath(file);
+                var dir = Path.GetDirectoryName(fileName);
+                if (!Directory.Exists(dir))
+                {
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    Directory.CreateDirectory(dir);
+                }
+                var textFile = File.Open(GetFilePath(file), FileMode.Create);
+                var writer = encoding == null
+                    ? new StreamWriter(textFile)
+                    : new StreamWriter(textFile, encoding);
+                return new WindowsTextFile(writer, formatProvider, encoding, flushSize);
+            });
         }
 
         /// <summary>
@@ -133,10 +167,17 @@ namespace SeemplestLight.Core.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        public Task<IAbstractTextFileWriter> AppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
+        public async Task<IAbstractTextFile> AppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
             Encoding encoding = null, int flushSize = 0)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                var textFile = File.Open(GetFilePath(file), FileMode.Append);
+                var writer = encoding == null
+                    ? new StreamWriter(textFile)
+                    : new StreamWriter(textFile, encoding);
+                return new WindowsTextFile(writer, formatProvider, encoding, flushSize);
+            });
         }
 
         /// <summary>
@@ -153,10 +194,13 @@ namespace SeemplestLight.Core.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        public Task<IAbstractTextFileWriter> CreateOrAppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
+        public async Task<IAbstractTextFile> CreateOrAppendText(AbstractFileDescriptor file,
+            IFormatProvider formatProvider = null,
             Encoding encoding = null, int flushSize = 0)
         {
-            throw new NotImplementedException();
+            return (await Exists(file))
+                ? await AppendText(file, formatProvider, encoding, flushSize)
+                : await CreateText(file, formatProvider, encoding, flushSize);
         }
 
         /// <summary>
@@ -179,19 +223,5 @@ namespace SeemplestLight.Core.AbstractFiles
         /// </summary>
         private string GetFilePath(AbstractFileDescriptor descriptor) =>
             Path.Combine(RootFolder, FilePathFromAbstractFile(descriptor));
-
-        /// <summary>
-        /// Opens a windows file with the specified file mode.
-        /// </summary>
-        private async Task<IAbstractTextFileWriter> OpenTextWriter(FileMode fileMode, AbstractFileDescriptor file, 
-            IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0)
-        {
-            return await Task.Run(() =>
-            {
-                var textFile = File.Open(GetFilePath(file), fileMode);
-                var writer = new StreamWriter(textFile, encoding ?? Encoding.UTF8);
-                return new WindowsTextFileWriter(writer, formatProvider, encoding, flushSize);
-            });
-        }
     }
 }
