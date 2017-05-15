@@ -16,14 +16,14 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         /// Gets the containers available within the storage
         /// </summary>
         /// <returns></returns>
-        Task<List<string>> GetContainers();
+        Task<List<string>> GetContainersAsync();
 
         /// <summary>
         /// Checks whether the container exists within the storage
         /// </summary>
         /// <param name="containerName">Name of the container to check</param>
         /// <returns>True, if the container exists; otherwise, false</returns>
-        Task<bool> ContainerExists(string containerName);
+        Task<bool> ContainerExistsAsync(string containerName);
 
         /// <summary>
         /// Creates a new container within the storage
@@ -32,7 +32,13 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         /// <exception cref="InvalidOperationException">
         /// The container already exists, thus it cannot be created.
         /// </exception>
-        Task CreateContainer(string containerName);
+        Task CreateContainerAsync(string containerName);
+
+        /// <summary>
+        /// Creates the specified container in the storage, provided it does not exist yet
+        /// </summary>
+        /// <param name="containerName">Name of the new container</param>
+        Task EnsureContainerAsync(string containerName);
 
         /// <summary>
         /// Removes a container from the storage, provided, it is empty
@@ -43,14 +49,14 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         /// <exception cref="InvalidOperationException">
         /// The container is not empty, thus it cannot be removed.
         /// </exception>
-        Task<bool> RemoveContainer(string containerName, bool eraseContents = false);
+        Task<bool> RemoveContainerAsync(string containerName, bool eraseContents = false);
 
         /// <summary>
         /// Checks whether the specified file exists in the storage.
         /// </summary>
         /// <param name="file">File to check</param>
         /// <returns>True, if the file exists; otherwise, false.</returns>
-        Task<bool> Exists(AbstractFileDescriptor file);
+        Task<bool> ExistsAsync(AbstractFileDescriptor file);
 
         /// <summary>
         /// Opens a text file for read. Returns the object to work with the file.
@@ -60,7 +66,7 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        Task<IAbstractTextFile> OpenText(AbstractFileDescriptor file, Encoding encoding = null);
+        Task<IAbstractTextFile> OpenTextAsync(AbstractFileDescriptor file, Encoding encoding = null);
 
         /// <summary>
         /// Creates an abstract text file. Returns the object to work with the file.
@@ -75,7 +81,7 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        Task<IAbstractTextFile> CreateText(AbstractFileDescriptor file, IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0);
+        Task<IAbstractTextFile> CreateTextAsync(AbstractFileDescriptor file, IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0);
 
         /// <summary>
         /// Opens an abstract text file for append operation. Returns the object to work with the file.
@@ -90,7 +96,7 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        Task<IAbstractTextFile> AppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0);
+        Task<IAbstractTextFile> AppendTextAsync(AbstractFileDescriptor file, IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0);
 
         /// <summary>
         /// Operns an abstract text file for append operation, or creates it, provided, it does not exists.
@@ -106,7 +112,7 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        Task<IAbstractTextFile> CreateOrAppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0);
+        Task<IAbstractTextFile> CreateOrAppendTextAsync(AbstractFileDescriptor file, IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0);
 
     }
 }

@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractFiles\AzureFileStorage.cs" />
+    <Compile Include="AbstractFiles\AzureTextFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -58,14 +58,14 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             // --- Arrange
             const string CONTAINER = "Container1";
             var wfs = new WindowsFileStorage(ROOT);
-            var before = await wfs.ContainerExists(CONTAINER);
+            var before = await wfs.ContainerExistsAsync(CONTAINER);
             // --- Act
 
-            await wfs.CreateContainer("Container1");
+            await wfs.CreateContainerAsync("Container1");
 
             // --- Assert
             before.ShouldBeFalse();
-            (await wfs.ContainerExists(CONTAINER)).ShouldBeTrue();
+            (await wfs.ContainerExistsAsync(CONTAINER)).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -75,10 +75,10 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             // --- Arrange
             const string CONTAINER = "Container1";
             var wfs = new WindowsFileStorage(ROOT);
-            await wfs.CreateContainer(CONTAINER);
+            await wfs.CreateContainerAsync(CONTAINER);
             
             // --- Act
-            await wfs.CreateContainer("Container1");
+            await wfs.CreateContainerAsync("Container1");
         }
 
         [TestMethod]
@@ -88,7 +88,7 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             var wfs = new WindowsFileStorage(ROOT);
 
             // --- Act
-            var containers = await wfs.GetContainers();
+            var containers = await wfs.GetContainersAsync();
 
             // --- Assert
             containers.Count.ShouldBe(0);
@@ -99,15 +99,45 @@ namespace SeemplestLight.Core.Test.AbstractFiles
         {
             // --- Arrange
             var wfs = new WindowsFileStorage(ROOT);
-            await wfs.CreateContainer("Container1");
-            await wfs.CreateContainer("Container2");
-            await wfs.CreateContainer("Container3");
+            await wfs.CreateContainerAsync("Container1");
+            await wfs.CreateContainerAsync("Container2");
+            await wfs.CreateContainerAsync("Container3");
 
             // --- Act
-            var containers = await wfs.GetContainers();
+            var containers = await wfs.GetContainersAsync();
 
             // --- Assert
             containers.Count.ShouldBe(3);
+        }
+
+        [TestMethod]
+        public async Task EnsureContainerWorksWithNonExistingContainer()
+        {
+            // --- Arrange
+            const string CONTAINER = "NonExisting";
+            var wfs = new WindowsFileStorage(ROOT);
+            await wfs.CreateContainerAsync("Container1");
+
+            // --- Act
+            await wfs.EnsureContainerAsync(CONTAINER);
+
+            // --- Assert
+            (await wfs.ContainerExistsAsync(CONTAINER)).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public async Task EnsureContainerWorksWithExistingContainer()
+        {
+            // --- Arrange
+            const string CONTAINER = "Existing";
+            var wfs = new WindowsFileStorage(ROOT);
+            await wfs.CreateContainerAsync(CONTAINER);
+
+            // --- Act
+            await wfs.EnsureContainerAsync(CONTAINER);
+
+            // --- Assert
+            (await wfs.ContainerExistsAsync(CONTAINER)).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -116,14 +146,14 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             // --- Arrange
             const string CONTAINER = "NonExisting";
             var wfs = new WindowsFileStorage(ROOT);
-            await wfs.CreateContainer("Container1");
+            await wfs.CreateContainerAsync("Container1");
 
             // --- Act
-            var removed = await wfs.RemoveContainer(CONTAINER);
+            var removed = await wfs.RemoveContainerAsync(CONTAINER);
 
             // --- Assert
             removed.ShouldBeFalse();
-            (await wfs.ContainerExists(CONTAINER)).ShouldBeFalse();
+            (await wfs.ContainerExistsAsync(CONTAINER)).ShouldBeFalse();
         }
 
         [TestMethod]
@@ -132,15 +162,15 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             // --- Arrange
             const string CONTAINER = "EmptyContainer";
             var wfs = new WindowsFileStorage(ROOT);
-            await wfs.CreateContainer("Container1");
-            await wfs.CreateContainer(CONTAINER);
+            await wfs.CreateContainerAsync("Container1");
+            await wfs.CreateContainerAsync(CONTAINER);
 
             // --- Act
-            var removed = await wfs.RemoveContainer(CONTAINER);
+            var removed = await wfs.RemoveContainerAsync(CONTAINER);
 
             // --- Assert
             removed.ShouldBeTrue();
-            (await wfs.ContainerExists(CONTAINER)).ShouldBeFalse();
+            (await wfs.ContainerExistsAsync(CONTAINER)).ShouldBeFalse();
         }
 
         [TestMethod]
@@ -150,17 +180,17 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             // --- Arrange
             const string CONTAINER = "NonEmptyContainer";
             var wfs = new WindowsFileStorage(ROOT);
-            await wfs.CreateContainer("Container1");
-            await wfs.CreateContainer(CONTAINER);
+            await wfs.CreateContainerAsync("Container1");
+            await wfs.CreateContainerAsync(CONTAINER);
             var filePath = Path.Combine(ROOT, Path.Combine(CONTAINER), "file.txt");
             File.WriteAllText(filePath, "TextContents");
 
             // --- Act
-            var removed = await wfs.RemoveContainer(CONTAINER);
+            var removed = await wfs.RemoveContainerAsync(CONTAINER);
 
             // --- Assert
             removed.ShouldBeTrue();
-            (await wfs.ContainerExists(CONTAINER)).ShouldBeFalse();
+            (await wfs.ContainerExistsAsync(CONTAINER)).ShouldBeFalse();
         }
 
         [TestMethod]
@@ -172,13 +202,13 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
 
             // --- Act
-            using (var textFile = await wfs.CreateText(file))
+            using (var textFile = await wfs.CreateTextAsync(file))
             {
                 textFile.Writer.Write(BODY);
             }
 
             // --- Assert
-            using (var savedFile = await wfs.OpenText(file))
+            using (var savedFile = await wfs.OpenTextAsync(file))
             {
                 var text = savedFile.Reader.ReadToEnd();
                 text.ShouldBe(BODY);
@@ -194,13 +224,13 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
 
             // --- Act
-            using (var textFile = await wfs.CreateText(file, encoding: Encoding.Unicode))
+            using (var textFile = await wfs.CreateTextAsync(file, encoding: Encoding.Unicode))
             {
                 textFile.Writer.Write(BODY);
             }
 
             // --- Assert
-            using (var savedFile = await wfs.OpenText(file))
+            using (var savedFile = await wfs.OpenTextAsync(file))
             {
                 var text = savedFile.Reader.ReadToEnd();
                 text.ShouldBe(BODY);
@@ -216,13 +246,13 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
 
             // --- Act
-            using (var textFile = await wfs.CreateText(file, encoding: Encoding.UTF32))
+            using (var textFile = await wfs.CreateTextAsync(file, encoding: Encoding.UTF32))
             {
                 textFile.Writer.Write(BODY);
             }
 
             // --- Assert
-            using (var savedFile = await wfs.OpenText(file))
+            using (var savedFile = await wfs.OpenTextAsync(file))
             {
                 var text = savedFile.Reader.ReadToEnd();
                 text.ShouldBe(BODY);
@@ -238,13 +268,13 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
 
             // --- Act
-            using (var textFile = await wfs.CreateText(file))
+            using (var textFile = await wfs.CreateTextAsync(file))
             {
                 textFile.Writer.Write(1.25);
             }
 
             // --- Assert
-            using (var savedFile = await wfs.OpenText(file))
+            using (var savedFile = await wfs.OpenTextAsync(file))
             {
                 var text = savedFile.Reader.ReadToEnd();
                 text.ShouldBe(BODY);
@@ -260,13 +290,13 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
 
             // --- Act
-            using (var textFile = await wfs.CreateText(file, new CultureInfo("hu-hu")))
+            using (var textFile = await wfs.CreateTextAsync(file, new CultureInfo("hu-hu")))
             {
                 textFile.Writer.Write(1.25);
             }
 
             // --- Assert
-            using (var savedFile = await wfs.OpenText(file))
+            using (var savedFile = await wfs.OpenTextAsync(file))
             {
                 var text = savedFile.Reader.ReadToEnd();
                 text.ShouldBe(BODY);
@@ -280,19 +310,19 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             const string BODY = "FirstSecond";
             var wfs = new WindowsFileStorage(ROOT);
             var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
-            using (var textFile = await wfs.CreateText(file))
+            using (var textFile = await wfs.CreateTextAsync(file))
             {
                 textFile.Writer.Write("First");
             }
 
             // --- Act
-            using (var textFile = await wfs.AppendText(file))
+            using (var textFile = await wfs.AppendTextAsync(file))
             {
                 textFile.Writer.Write("Second");
             }
 
             // --- Assert
-            using (var savedFile = await wfs.OpenText(file))
+            using (var savedFile = await wfs.OpenTextAsync(file))
             {
                 var text = savedFile.Reader.ReadToEnd();
                 text.ShouldBe(BODY);
@@ -306,19 +336,19 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             const string BODY = "FirstSecond";
             var wfs = new WindowsFileStorage(ROOT);
             var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
-            using (var textFile = await wfs.CreateText(file, encoding: Encoding.Unicode))
+            using (var textFile = await wfs.CreateTextAsync(file, encoding: Encoding.Unicode))
             {
                 textFile.Writer.Write("First");
             }
 
             // --- Act
-            using (var textFile = await wfs.AppendText(file, encoding: Encoding.Unicode))
+            using (var textFile = await wfs.AppendTextAsync(file, encoding: Encoding.Unicode))
             {
                 textFile.Writer.Write("Second");
             }
 
             // --- Assert
-            using (var savedFile = await wfs.OpenText(file))
+            using (var savedFile = await wfs.OpenTextAsync(file))
             {
                 var text = savedFile.Reader.ReadToEnd();
                 text.ShouldBe(BODY);
@@ -332,19 +362,19 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             const string BODY = "FirstSecond";
             var wfs = new WindowsFileStorage(ROOT);
             var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
-            using (var textFile = await wfs.CreateText(file, encoding: Encoding.UTF32))
+            using (var textFile = await wfs.CreateTextAsync(file, encoding: Encoding.UTF32))
             {
                 textFile.Writer.Write("First");
             }
 
             // --- Act
-            using (var textFile = await wfs.AppendText(file, encoding: Encoding.UTF32))
+            using (var textFile = await wfs.AppendTextAsync(file, encoding: Encoding.UTF32))
             {
                 textFile.Writer.Write("Second");
             }
 
             // --- Assert
-            using (var savedFile = await wfs.OpenText(file))
+            using (var savedFile = await wfs.OpenTextAsync(file))
             {
                 var text = savedFile.Reader.ReadToEnd();
                 text.ShouldBe(BODY);
@@ -358,19 +388,19 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             const string BODY = "1.25-1.25";
             var wfs = new WindowsFileStorage(ROOT);
             var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
-            using (var textFile = await wfs.CreateText(file))
+            using (var textFile = await wfs.CreateTextAsync(file))
             {
                 textFile.Writer.Write(1.25);
             }
 
             // --- Act
-            using (var textFile = await wfs.AppendText(file))
+            using (var textFile = await wfs.AppendTextAsync(file))
             {
                 textFile.Writer.Write(-1.25);
             }
 
             // --- Assert
-            using (var savedFile = await wfs.OpenText(file))
+            using (var savedFile = await wfs.OpenTextAsync(file))
             {
                 var text = savedFile.Reader.ReadToEnd();
                 text.ShouldBe(BODY);
@@ -384,19 +414,77 @@ namespace SeemplestLight.Core.Test.AbstractFiles
             const string BODY = "1,25-1,25";
             var wfs = new WindowsFileStorage(ROOT);
             var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
-            using (var textFile = await wfs.CreateText(file, new CultureInfo("hu-hu")))
+            using (var textFile = await wfs.CreateTextAsync(file, new CultureInfo("hu-hu")))
             {
                 textFile.Writer.Write(1.25);
             }
 
             // --- Act
-            using (var textFile = await wfs.AppendText(file, new CultureInfo("hu-hu")))
+            using (var textFile = await wfs.AppendTextAsync(file, new CultureInfo("hu-hu")))
             {
                 textFile.Writer.Write(-1.25);
             }
 
             // --- Assert
-            using (var savedFile = await wfs.OpenText(file))
+            using (var savedFile = await wfs.OpenTextAsync(file))
+            {
+                var text = savedFile.Reader.ReadToEnd();
+                text.ShouldBe(BODY);
+            }
+        }
+
+        [TestMethod]
+        public async Task CreateOrAppendTextWorksWithNonExistingFile()
+        {
+            // --- Arrange
+            const string BODY = "This is a text file";
+            var wfs = new WindowsFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+            var fileName = WindowsFileStorage.FilePathFromAbstractFile(file);
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+            }
+
+            // --- Act
+            using (var textFile = await wfs.CreateOrAppendTextAsync(file))
+            {
+                textFile.Writer.Write(BODY);
+            }
+
+            // --- Assert
+            using (var savedFile = await wfs.OpenTextAsync(file))
+            {
+                var text = savedFile.Reader.ReadToEnd();
+                text.ShouldBe(BODY);
+            }
+        }
+
+        [TestMethod]
+        public async Task CreateOrAppendTextWorksWithExistingFile()
+        {
+            // --- Arrange
+            const string BODY = "FirstSecond";
+            var wfs = new WindowsFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+            var fileName = WindowsFileStorage.FilePathFromAbstractFile(file);
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+            }
+            using (var textFile = await wfs.CreateTextAsync(file))
+            {
+                textFile.Writer.Write("First");
+            }
+
+            // --- Act
+            using (var textFile = await wfs.CreateOrAppendTextAsync(file))
+            {
+                textFile.Writer.Write("Second");
+            }
+
+            // --- Assert
+            using (var savedFile = await wfs.OpenTextAsync(file))
             {
                 var text = savedFile.Reader.ReadToEnd();
                 text.ShouldBe(BODY);

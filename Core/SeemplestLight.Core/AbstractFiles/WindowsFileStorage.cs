@@ -28,7 +28,7 @@ namespace SeemplestLight.Core.AbstractFiles
         /// Gets the containers available within the storage
         /// </summary>
         /// <returns></returns>
-        public Task<List<string>> GetContainers()
+        public Task<List<string>> GetContainersAsync()
         {
             return Task.Run(() =>
             {
@@ -42,7 +42,7 @@ namespace SeemplestLight.Core.AbstractFiles
         /// </summary>
         /// <param name="containerName">Name of the container to check</param>
         /// <returns>True, if the container exists; otherwise, false</returns>
-        public Task<bool> ContainerExists(string containerName)
+        public Task<bool> ContainerExistsAsync(string containerName)
         {
             return Task.Run(() => Directory.Exists(Path.Combine(RootFolder, containerName)));
         }
@@ -54,13 +54,29 @@ namespace SeemplestLight.Core.AbstractFiles
         /// <exception cref="System.InvalidOperationException">
         /// The container already exists, thus it cannot be created.
         /// </exception>
-        public async Task CreateContainer(string containerName)
+        public async Task CreateContainerAsync(string containerName)
         {
-            if (await ContainerExists(containerName))
+            if (await ContainerExistsAsync(containerName))
             {
                 throw new InvalidOperationException($"{containerName} container already exists, it cannot be created.");
             }
             Directory.CreateDirectory(Path.Combine(RootFolder, containerName));
+        }
+
+        /// <summary>
+        /// Creates the specified container in the storage, provided it does not exist yet
+        /// </summary>
+        /// <param name="containerName">Name of the new container</param>
+        public async Task EnsureContainerAsync(string containerName)
+        {
+            await Task.Run(() =>
+            {
+                var dirName = Path.Combine(RootFolder, containerName);
+                if (!Directory.Exists(dirName))
+                {
+                    Directory.CreateDirectory(dirName);
+                }
+            });
         }
 
         /// <summary>
@@ -72,7 +88,7 @@ namespace SeemplestLight.Core.AbstractFiles
         /// <exception cref="System.InvalidOperationException">
         /// The container is not empty, thus it cannot be removed.
         /// </exception>
-        public Task<bool> RemoveContainer(string containerName, bool eraseContents = false)
+        public Task<bool> RemoveContainerAsync(string containerName, bool eraseContents = false)
         {
             return Task.Run(() =>
             {
@@ -96,7 +112,7 @@ namespace SeemplestLight.Core.AbstractFiles
         /// </summary>
         /// <param name="file">File to check</param>
         /// <returns>True, if the file exists; otherwise, false.</returns>
-        public Task<bool> Exists(AbstractFileDescriptor file)
+        public Task<bool> ExistsAsync(AbstractFileDescriptor file)
         {
             return Task.Run(() => File.Exists(GetFilePath(file)));
         }
@@ -109,7 +125,7 @@ namespace SeemplestLight.Core.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        public async Task<IAbstractTextFile> OpenText(AbstractFileDescriptor file, Encoding encoding = null)
+        public async Task<IAbstractTextFile> OpenTextAsync(AbstractFileDescriptor file, Encoding encoding = null)
         {
             return await Task.Run(() =>
             {
@@ -134,7 +150,7 @@ namespace SeemplestLight.Core.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        public async Task<IAbstractTextFile> CreateText(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
+        public async Task<IAbstractTextFile> CreateTextAsync(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
             Encoding encoding = null, int flushSize = 0)
         {
             return await Task.Run(() =>
@@ -167,7 +183,7 @@ namespace SeemplestLight.Core.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        public async Task<IAbstractTextFile> AppendText(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
+        public async Task<IAbstractTextFile> AppendTextAsync(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
             Encoding encoding = null, int flushSize = 0)
         {
             return await Task.Run(() =>
@@ -194,13 +210,13 @@ namespace SeemplestLight.Core.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        public async Task<IAbstractTextFile> CreateOrAppendText(AbstractFileDescriptor file,
+        public async Task<IAbstractTextFile> CreateOrAppendTextAsync(AbstractFileDescriptor file,
             IFormatProvider formatProvider = null,
             Encoding encoding = null, int flushSize = 0)
         {
-            return (await Exists(file))
-                ? await AppendText(file, formatProvider, encoding, flushSize)
-                : await CreateText(file, formatProvider, encoding, flushSize);
+            return (await ExistsAsync(file))
+                ? await AppendTextAsync(file, formatProvider, encoding, flushSize)
+                : await CreateTextAsync(file, formatProvider, encoding, flushSize);
         }
 
         /// <summary>
