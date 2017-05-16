@@ -147,6 +147,29 @@ namespace SeemplestLight.Core.Azure.AbstractFiles
         }
 
         /// <summary>
+        /// Removes the specified abstract file
+        /// </summary>
+        /// <param name="file">File to remove</param>
+        /// <returns>True, if the file existed before the remove operation</returns>
+        public async Task<bool> DeleteAsync(AbstractFileDescriptor file)
+        {
+            var containerName = (file.RootContainer ?? "").ToLower();
+            var blobClient = StorageAccount.CreateCloudBlobClient();
+            var container = blobClient.GetContainerReference(containerName);
+            if (!await container.ExistsAsync())
+            {
+                return false;
+            }
+
+            var blob = await GetAppendBlobReference(file);
+            if (blob == null)
+            {
+                return false;
+            }
+            return await blob.DeleteIfExistsAsync();
+        }
+
+        /// <summary>
         /// Opens a text file for read. Returns the object to work with the file.
         /// </summary>
         /// <param name="file">Abstract file descriptor</param>
@@ -190,10 +213,7 @@ namespace SeemplestLight.Core.Azure.AbstractFiles
         {
             await EnsureContainerAsync(file.RootContainer);
             var blob = await GetAppendBlobReference(file);
-            var blobStream = await blob.OpenWriteAsync(true);
-            var writer = encoding == null
-                ? new StreamWriter(blobStream)
-                : new StreamWriter(blobStream, encoding);
+            await blob.OpenWriteAsync(true);
             return new AzureTextFile(blob, formatProvider, encoding, flushSize);
         }
 
@@ -215,10 +235,7 @@ namespace SeemplestLight.Core.Azure.AbstractFiles
         {
             await EnsureContainerAsync(file.RootContainer);
             var blob = await GetAppendBlobReference(file);
-            var blobStream = await blob.OpenWriteAsync(false);
-            var writer = encoding == null
-                ? new StreamWriter(blobStream)
-                : new StreamWriter(blobStream, encoding);
+            await blob.OpenWriteAsync(false);
             return new AzureTextFile(blob, formatProvider, encoding, flushSize);
         }
 
@@ -236,10 +253,12 @@ namespace SeemplestLight.Core.Azure.AbstractFiles
         /// <returns>
         /// The object that provides operations to work with the text file.
         /// </returns>
-        public Task<IAbstractTextFile> CreateOrAppendTextAsync(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
+        public async Task<IAbstractTextFile> CreateOrAppendTextAsync(AbstractFileDescriptor file, IFormatProvider formatProvider = null,
             Encoding encoding = null, int flushSize = 0)
         {
-            throw new NotImplementedException();
+            return (await ExistsAsync(file))
+                ? await AppendTextAsync(file, formatProvider, encoding, flushSize)
+                : await CreateTextAsync(file, formatProvider, encoding, flushSize);
         }
 
         /// <summary>

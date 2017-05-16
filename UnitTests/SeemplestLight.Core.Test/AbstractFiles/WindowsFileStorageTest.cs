@@ -194,6 +194,41 @@ namespace SeemplestLight.Core.Test.AbstractFiles
         }
 
         [TestMethod]
+        public async Task DeleteWorksWithExistingFile()
+        {
+            // --- Arrange
+            var wfs = new WindowsFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+            using (var textFile = await wfs.CreateTextAsync(file))
+            {
+                textFile.Writer.Write("Awesome");
+            }
+
+            // --- Act
+            var deleted = await wfs.DeleteAsync(file);
+
+            // --- Assert
+            deleted.ShouldBeTrue();
+            (await wfs.ExistsAsync(file)).ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public async Task DeleteWorksWithNonExistingFile()
+        {
+            // --- Arrange
+            var wfs = new WindowsFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+            await wfs.DeleteAsync(file);
+
+            // --- Act
+            var deleted = await wfs.DeleteAsync(file);
+
+            // --- Assert
+            deleted.ShouldBeFalse();
+            (await wfs.ExistsAsync(file)).ShouldBeFalse();
+        }
+
+        [TestMethod]
         public async Task CreateTextWorksAsExpected()
         {
             // --- Arrange

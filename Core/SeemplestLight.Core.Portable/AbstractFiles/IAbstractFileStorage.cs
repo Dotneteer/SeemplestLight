@@ -59,6 +59,13 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         Task<bool> ExistsAsync(AbstractFileDescriptor file);
 
         /// <summary>
+        /// Removes the specified abstract file
+        /// </summary>
+        /// <param name="file">File to remove</param>
+        /// <returns>True, if the file existed before the remove operation</returns>
+        Task<bool> DeleteAsync(AbstractFileDescriptor file);
+
+        /// <summary>
         /// Opens a text file for read. Returns the object to work with the file.
         /// </summary>
         /// <param name="file">Abstract file descriptor</param>
@@ -113,6 +120,5 @@ namespace SeemplestLight.Core.Portable.AbstractFiles
         /// The object that provides operations to work with the text file.
         /// </returns>
         Task<IAbstractTextFile> CreateOrAppendTextAsync(AbstractFileDescriptor file, IFormatProvider formatProvider = null, Encoding encoding = null, int flushSize = 0);
-
     }
 }

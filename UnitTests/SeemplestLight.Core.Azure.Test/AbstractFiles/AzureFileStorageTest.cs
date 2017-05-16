@@ -166,6 +166,41 @@ namespace SeemplestLight.Core.Azure.Test.AbstractFiles
         }
 
         [TestMethod]
+        public async Task DeleteWorksWithExistingFile()
+        {
+            // --- Arrange
+            var wfs = new AzureFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+            using (var textFile = await wfs.CreateTextAsync(file))
+            {
+                textFile.Writer.Write("Awesome");
+            }
+
+            // --- Act
+            var deleted = await wfs.DeleteAsync(file);
+
+            // --- Assert
+            deleted.ShouldBeTrue();
+            (await wfs.ExistsAsync(file)).ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public async Task DeleteWorksWithNonExistingFile()
+        {
+            // --- Arrange
+            var wfs = new AzureFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+            await wfs.DeleteAsync(file);
+
+            // --- Act
+            var deleted = await wfs.DeleteAsync(file);
+
+            // --- Assert
+            deleted.ShouldBeFalse();
+            (await wfs.ExistsAsync(file)).ShouldBeFalse();
+        }
+
+        [TestMethod]
         public async Task CreateTextWorksAsExpected()
         {
             // --- Arrange
@@ -361,6 +396,54 @@ namespace SeemplestLight.Core.Azure.Test.AbstractFiles
             }
         }
 
+        [TestMethod]
+        public async Task CreateOrAppendTextWorksWithNonExistingFile()
+        {
+            // --- Arrange
+            const string BODY = "This is a text file";
+            var wfs = new AzureFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+            await wfs.DeleteAsync(file);
+
+            // --- Act
+            using (var textFile = await wfs.CreateOrAppendTextAsync(file))
+            {
+                textFile.Writer.Write(BODY);
+            }
+
+            // --- Assert
+            using (var savedFile = await wfs.OpenTextAsync(file))
+            {
+                var text = savedFile.Reader.ReadToEnd();
+                text.ShouldBe(BODY);
+            }
+        }
+
+        [TestMethod]
+        public async Task CreateOrAppendTextWorksWithExistingFile()
+        {
+            // --- Arrange
+            const string BODY = "FirstSecond";
+            var wfs = new AzureFileStorage(ROOT);
+            var file = new AbstractFileDescriptor("Container", null, "TestFile.txt");
+            using (var textFile = await wfs.CreateTextAsync(file))
+            {
+                textFile.Writer.Write("First");
+            }
+
+            // --- Act
+            using (var textFile = await wfs.CreateOrAppendTextAsync(file))
+            {
+                textFile.Writer.Write("Second");
+            }
+
+            // --- Assert
+            using (var savedFile = await wfs.OpenTextAsync(file))
+            {
+                var text = savedFile.Reader.ReadToEnd();
+                text.ShouldBe(BODY);
+            }
+        }
 
         private static void RemoveContainers()
         {

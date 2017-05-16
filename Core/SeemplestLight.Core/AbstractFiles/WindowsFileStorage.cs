@@ -118,6 +118,25 @@ namespace SeemplestLight.Core.AbstractFiles
         }
 
         /// <summary>
+        /// Removes the specified abstract file
+        /// </summary>
+        /// <param name="file">File to remove</param>
+        /// <returns>True, if the file existed before the remove operation</returns>
+        public Task<bool> DeleteAsync(AbstractFileDescriptor file)
+        {
+            return Task.Run(() =>
+            {
+                var path = GetFilePath(file);
+                var exists = File.Exists(path);
+                if (exists)
+                {
+                    File.Delete(path);
+                }
+                return exists;
+            });
+        }
+
+        /// <summary>
         /// Opens a text file for read. Returns the object to work with the file.
         /// </summary>
         /// <param name="file">Abstract file descriptor</param>
